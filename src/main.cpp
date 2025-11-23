@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "ftxui/dom/elements.hpp"
-
 using namespace ftxui;
 
 const std::string LOGO =
