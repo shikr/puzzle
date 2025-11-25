@@ -17,3 +17,13 @@ target_link_libraries(puzzle PRIVATE
   ftxui::dom
   ftxui::screen
 )
+
+target_sources(puzzle PRIVATE
+  src/app/app_manager.cpp
+  src/app/app_manager.hpp
+
+  src/ui/screens/base_screen.cpp
+  src/ui/screens/base_screen.hpp
+  src/ui/screens/start_screen.cpp
+  src/ui/screens/start_screen.hpp
+)
