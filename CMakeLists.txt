@@ -26,4 +26,6 @@ target_sources(puzzle PRIVATE
   src/ui/screens/base_screen.hpp
   src/ui/screens/start_screen.cpp
   src/ui/screens/start_screen.hpp
+  src/ui/screens/game_screen.hpp
+  src/ui/screens/game_screen.cpp
 )

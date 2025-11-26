@@ -30,7 +30,8 @@ std::vector<std::string> StartScreen::level_entries = {"FÃ¡cil", "Normal", "DifÃ
 Component StartScreen::render() {
   buttons = Container::Horizontal(
       {Button(
-           "Iniciar", [] {}, ButtonOption::Animated(Color::Green)) |
+           "Iniciar", [&] { app->redirect("game"); },
+           ButtonOption::Animated(Color::Green)) |
            borderEmpty,
        Button(
            "Salir", [&] { app->exit(); }, ButtonOption::Animated(Color::Red)) |
