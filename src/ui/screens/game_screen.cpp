@@ -89,7 +89,7 @@ void GameScreen::rebuild() {
 
       curr->Add(Button(" " + (cell == 9 ? " " : std::to_string(cell)) + " ", [&, i, j] {
         if (swapEmpty(i, j)) {
-          if (completed()) app->exit();
+          if (completed()) app->redirect("completed");
           rebuild();
         }
       }));
