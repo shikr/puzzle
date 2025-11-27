@@ -1,5 +1,6 @@
 #include "game_screen.hpp"
 
+#include <cmath>
 #include <ftxui/component/component.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <random>
@@ -15,19 +16,50 @@ using namespace ftxui;
 
 static std::random_device rd;
 static std::mt19937 eng(rd());
-static std::uniform_int_distribution board_number(1, 8);
 static std::uniform_int_distribution board_index(0, 8);
 
 GameScreen::GameScreen(AppManager* appManager) : BaseScreen(appManager) {
   shuffleBoard();
 }
 
+int GameScreen::countInversions() {
+  int inversions = 0;
+  int size = std::pow(board.size(), 2);
+  for (int i = 0; i < size - 1; ++i) {
+    int ix = i / 3;
+    int iy = i % 3;
+    for (int j = i + 1; j < size; ++j) {
+      int jx = j / 3;
+      int jy = j % 3;
+      auto icell = board[ix][iy];
+      auto jcell = board[jx][jy];
+      if (icell != 0 && jcell != 0 && icell > jcell) inversions++;
+    }
+  }
+
+  return inversions;
+}
+
+bool GameScreen::validBoard() {
+  std::set<int> numbers;
+
+  for (auto row : board) {
+    for (auto cell : row) {
+      if (cell < 0 || cell > 8 || !numbers.insert(cell).second) return false;
+    }
+  }
+
+  if (countInversions() % 2 != 0) return false;
+
+  return true;
+}
+
 void GameScreen::shuffleBoard() {
   std::set<int> numbers;
   int i = 0;
 
-  while (numbers.size() < 8) {
-    int n = board_number(eng);
+  while (numbers.size() < 9) {
+    int n = board_index(eng);
     if (numbers.insert(n).second) {
       int row = i / 3;
       int col = i % 3;
@@ -35,23 +67,17 @@ void GameScreen::shuffleBoard() {
       i++;
     }
   }
-  // El ultimo siempre sera 9 (vacio)
-  board[2][2] = 9;
 
-  // Coloca el 9 en un lugar aleatorio
-  int empty = board_index(eng);
-  int row = empty / 3;
-  int col = empty % 3;
-  std::swap(board[2][2], board[row][col]);
+  if (!validBoard()) shuffleBoard();
 }
 
 bool GameScreen::isEmpty(int i, int j) {
   if (i < 0 || j < 0 || i > 2 || j > 2) return false;
-  return board[i][j] == 9;
+  return board[i][j] == 0;
 }
 
 bool GameScreen::swapEmpty(int i, int j) {
-  if (board[i][j] == 9) return false;
+  if (board[i][j] == 0) return false;
 
   std::vector<std::pair<int, int>> pairs = {
       {i - 1, j}, {i, j - 1}, {i, j + 1}, {i + 1, j}};
@@ -71,7 +97,7 @@ bool GameScreen::completed() {
     const auto row = board[i];
     for (int j = 0; j < row.size(); j++) {
       const auto cell = row[j];
-      if (cell - 1 != row.size() * i + j) return false;
+      if (cell != (row.size() * i + j + 1) % 9) return false;
     }
   }
   return true;
@@ -87,7 +113,7 @@ void GameScreen::rebuild() {
     for (int j = 0; j < row.size(); j++) {
       const auto cell = row[j];
 
-      curr->Add(Button(" " + (cell == 9 ? " " : std::to_string(cell)) + " ", [&, i, j] {
+      curr->Add(Button(" " + (cell == 0 ? " " : std::to_string(cell)) + " ", [&, i, j] {
         if (swapEmpty(i, j)) {
           if (completed()) app->redirect("completed");
           rebuild();
