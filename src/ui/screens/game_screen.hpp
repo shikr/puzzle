@@ -6,15 +6,7 @@
 #include "base_screen.hpp"
 
 class GameScreen final : public BaseScreen {
-  std::array<std::array<int, 3>, 3> board;
   ftxui::Component container;
-
-  int countInversions();
-  bool validBoard();
-  void shuffleBoard();
-  bool isEmpty(int i, int j);
-  bool swapEmpty(int i, int j);
-  bool completed();
   void rebuild();
 
  public:

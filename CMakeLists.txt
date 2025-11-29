@@ -21,6 +21,8 @@ target_link_libraries(puzzle PRIVATE
 target_sources(puzzle PRIVATE
   src/app/app_manager.cpp
   src/app/app_manager.hpp
+  src/app/puzzle.cpp
+  src/app/puzzle.hpp
 
   src/ui/screens/base_screen.cpp
   src/ui/screens/base_screen.hpp
