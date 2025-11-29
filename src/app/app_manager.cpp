@@ -8,9 +8,8 @@
 #include "../ui/screens/game_screen.hpp"
 #include "../ui/screens/start_screen.hpp"
 
-AppManager::AppManager() : screen(ftxui::ScreenInteractive::FullscreenAlternateScreen()) {
-  puzzle.useRandomBoard();
-}
+AppManager::AppManager()
+    : screen(ftxui::ScreenInteractive::FullscreenAlternateScreen()) {}
 
 void AppManager::run() {
   StartScreen startScreen(this);
