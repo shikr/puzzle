@@ -23,6 +23,8 @@ target_sources(puzzle PRIVATE
   src/app/app_manager.hpp
   src/app/puzzle.cpp
   src/app/puzzle.hpp
+  src/app/solver.cpp
+  src/app/solver.hpp
 
   src/ui/screens/base_screen.cpp
   src/ui/screens/base_screen.hpp
