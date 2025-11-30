@@ -43,7 +43,12 @@ void Solver::solve(int moves) {
   path = paths.begin();
 }
 
-void Solver::solve() { solve(0); }
+void Solver::solve() {
+  visited.clear();
+  parent.clear();
+  paths.clear();
+  solve(0);
+}
 
 bool Solver::isSafe(int i, int j) { return (i >= 0 && i < 3 && j >= 0 && j < 3); }
 
