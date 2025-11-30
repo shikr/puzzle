@@ -30,6 +30,8 @@ target_sources(puzzle PRIVATE
   src/ui/screens/start_screen.hpp
   src/ui/screens/game_screen.cpp
   src/ui/screens/game_screen.hpp
+  src/ui/screens/solver_screen.cpp
+  src/ui/screens/solver_screen.hpp
   src/ui/screens/completed_screen.cpp
   src/ui/screens/completed_screen.hpp
 )

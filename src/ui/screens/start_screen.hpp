@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <ftxui/component/component_base.hpp>
 #include <ftxui/component/component_options.hpp>
 #include <string>
@@ -17,6 +18,16 @@ class StartScreen final : public BaseScreen {
   Component buttons;
   Component menu;
   Component layout;
+
+  std::array<std::string, 2> boards;
+  std::array<std::string, 2>::iterator it;
+  std::string boardInput;
+  std::string modalTitle;
+  std::string errorMessage;
+  bool showModal = false;
+
+  ftxui::Component inputModal();
+  void resetInput();
 
  public:
   StartScreen(AppManager*);
