@@ -14,10 +14,11 @@ using namespace ftxui;
 SolverScreen::SolverScreen(AppManager* appManager) : BaseScreen(appManager) {}
 
 Component SolverScreen::render() {
-  auto container = Container::Horizontal({Button(" << ", [&] { app->firstStep(); }),
-                                          Button(" < ", [&] { app->prevStep(); }),
-                                          Button(" > ", [&] { app->nextStep(); }),
-                                          Button(" >> ", [&] { app->lastStep(); })});
+  auto container = Container::Horizontal(
+      {Button(" << ", [&] { app->firstStep(); }), Button(" < ", [&] { app->prevStep(); }),
+       Button("Inicio", [&] { app->redirect("start"); }),
+       Button(" > ", [&] { app->nextStep(); }),
+       Button(" >> ", [&] { app->lastStep(); })});
 
   return Renderer(container, [&, container] {
     std::vector<std::vector<Element>> rows;
@@ -31,7 +32,9 @@ Component SolverScreen::render() {
       rows.push_back(std::vector<Element>(t.begin(), t.end()));
     }
 
-    return hbox({filler(), vbox({filler(), gridbox(rows), container->Render(), filler()}),
+    return hbox({filler(),
+                 vbox({filler(), hbox({filler(), gridbox(rows), filler()}),
+                       container->Render(), filler()}),
                  filler()});
   });
 }
