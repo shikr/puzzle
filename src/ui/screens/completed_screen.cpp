@@ -32,9 +32,14 @@ const std::string LABEL =
 CompletedScreen::CompletedScreen(AppManager* app) : BaseScreen(app) {}
 
 Component CompletedScreen::render() {
-  auto buttons = Button(
-                     "Salir", [&] { app->exit(); }, ButtonOption::Animated(Color::Red)) |
-                 borderEmpty;
+  auto buttons = Container::Horizontal(
+      {Button(
+           "Inicio", [&] { app->redirect("start"); },
+           ButtonOption::Animated(Color::Blue)) |
+           borderEmpty,
+       Button(
+           "Salir", [&] { app->exit(); }, ButtonOption::Animated(Color::Red)) |
+           borderEmpty});
 
   return Renderer(buttons, [&, buttons] {
     return vbox(
