@@ -14,10 +14,7 @@ using namespace ftxui;
 class StartScreen final : public BaseScreen {
   static std::vector<std::string> level_entries;
   int selected;
-  MenuOption menuOption;
   Component buttons;
-  Component menu;
-  Component layout;
 
   std::array<std::string, 2> boards;
   std::array<std::string, 2>::iterator it;

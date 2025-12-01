@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ftxui/component/screen_interactive.hpp>
-#include <list>
 #include <string>
 
 #include "puzzle.hpp"
@@ -9,7 +8,6 @@
 class AppManager {
   ftxui::ScreenInteractive screen;
   Puzzle puzzle;
-  list<Board>::iterator step;
   int screenId = 0;
   bool loading = false;
 

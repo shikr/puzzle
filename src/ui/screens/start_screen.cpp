@@ -50,13 +50,14 @@ Component StartScreen::render() {
            "Salir", [&] { app->exit(); }, ButtonOption::Animated(Color::Red)) |
            borderEmpty});
 
+  MenuOption menuOption;
   menuOption.on_enter = [&] { buttons->TakeFocus(); };
-  menu = Menu(&level_entries, &selected, menuOption);
+  auto menu = Menu(&level_entries, &selected, menuOption);
 
-  layout = Container::Vertical({menu, buttons});
+  auto layout = Container::Vertical({menu, buttons});
 
   return Renderer(layout,
-                  [&] {
+                  [&, menu] {
                     return vbox({
                         filler(),
                         hbox({filler(),

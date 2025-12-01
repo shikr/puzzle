@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "../../app/app_manager.hpp"
-#include "../../app/puzzle.hpp"
 #include "base_screen.hpp"
 
 using namespace ftxui;
