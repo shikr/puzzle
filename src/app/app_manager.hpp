@@ -1,13 +1,18 @@
 #pragma once
 
 #include <ftxui/component/screen_interactive.hpp>
+#include <set>
 #include <string>
 
 #include "puzzle.hpp"
+#include "score.hpp"
 
 class AppManager {
   ftxui::ScreenInteractive screen;
   Puzzle puzzle;
+  std::set<Score> scores;
+  Timestamp start;
+  int moves;
   int screenId = 0;
   bool loading = false;
 
@@ -16,6 +21,8 @@ class AppManager {
 
   void run();
   void solve();
+  void save(std::string);
+  set<Score> getScores();
   Board getStep();
   void firstStep();
   void prevStep();

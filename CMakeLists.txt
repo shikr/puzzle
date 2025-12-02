@@ -25,6 +25,8 @@ target_sources(puzzle PRIVATE
   src/app/puzzle.hpp
   src/app/solver.cpp
   src/app/solver.hpp
+  src/app/score.cpp
+  src/app/score.hpp
 
   src/ui/screens/base_screen.cpp
   src/ui/screens/base_screen.hpp
@@ -36,4 +38,6 @@ target_sources(puzzle PRIVATE
   src/ui/screens/solver_screen.hpp
   src/ui/screens/completed_screen.cpp
   src/ui/screens/completed_screen.hpp
+  src/ui/screens/scores_screen.cpp
+  src/ui/screens/scores_screen.hpp
 )

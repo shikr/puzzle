@@ -47,6 +47,10 @@ Component StartScreen::render() {
            ButtonOption::Animated(Color::Yellow)) |
            borderEmpty,
        Button(
+           "Puntuaciones", [&] { app->redirect("scores"); },
+           ButtonOption::Animated(Color::Blue)) |
+           borderEmpty,
+       Button(
            "Salir", [&] { app->exit(); }, ButtonOption::Animated(Color::Red)) |
            borderEmpty});
 
