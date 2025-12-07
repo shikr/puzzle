@@ -22,6 +22,7 @@ class AppManager {
   void run();
   void solve();
   void save(std::string);
+  int suggest();
   set<Score> getScores();
   Board getStep();
   void firstStep();

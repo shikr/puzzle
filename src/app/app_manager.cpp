@@ -42,6 +42,20 @@ void AppManager::solve() {
   }).detach();
 }
 
+int AppManager::suggest() {
+  puzzle.solve();
+  nextStep();
+  Board next = getStep();
+
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      if (next[i][j] == 0) return getBoard()[i][j];
+    }
+  }
+
+  return INT_MAX;
+}
+
 void AppManager::save(std::string name) {
   Score sc;
   sc.save(name, start, moves);
