@@ -22,7 +22,14 @@ GameScreen::GameScreen(AppManager* appManager)
 
       opt.label = &labels[i][j];
       opt.on_click = [&, i, j] {
+        suggestion = INT_MAX;
         if (app->moveTile(i, j) && app->isCompleted()) app->redirect("completed");
+      };
+      opt.transform = [&, i, j](const EntryState s) {
+        auto element = text(s.label) | borderRounded;
+        if (s.focused) element |= bgcolor(Color::White) | color(Color::Black);
+        if (app->getBoard()[i][j] == suggestion) element |= color(Color::Blue);
+        return element;
       };
 
       row->Add(Button(opt));
@@ -32,7 +39,12 @@ GameScreen::GameScreen(AppManager* appManager)
 }
 
 Component GameScreen::render() {
-  return Renderer(container, [&] {
+  auto button = Button(
+      "Sugerencia", [&] { suggestion = app->suggest(); },
+      ButtonOption::Animated(Color::Yellow));
+  auto layout = Container::Vertical({container, button});
+
+  return Renderer(layout, [&, button] {
     Board board = app->getBoard();
 
     for (int i = 0; i < 3; ++i) {
@@ -43,6 +55,8 @@ Component GameScreen::render() {
       }
     }
 
-    return vbox(filler(), hbox(filler(), container->Render(), filler()), filler());
+    return vbox(filler(),
+                hbox(filler(), vbox({container->Render(), button->Render()}), filler()),
+                filler());
   });
 }
