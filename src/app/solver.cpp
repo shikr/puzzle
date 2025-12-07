@@ -26,6 +26,7 @@ void Solver::solve() {
     if (visited.contains(state)) continue;
 
     if (state == *goal) {
+      paths.clear();
       savePath(parent, state);
       break;
     }
