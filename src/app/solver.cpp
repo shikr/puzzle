@@ -1,53 +1,51 @@
 #include "solver.hpp"
 
 #include <cmath>
+#include <map>
 #include <queue>
+#include <set>
 #include <utility>
 #include <vector>
 
-bool Cmp::operator()(State& a, State& b) {
-  int am = Solver::manhattan(a.first.first, a.first.second, a.second);
-  int bm = Solver::manhattan(b.first.first, b.first.second, b.second);
-
-  return am < bm;
-}
-
 Solver::Solver(Board* b, Board* g) : board(b), goal(g) {}
 
-void Solver::solve(int moves) {
-  priority_queue<State, vector<State>, Cmp> qu;
+void Solver::solve() {
+  priority_queue<State, vector<State>, greater<State>> qu;
+  set<Board> visited;
+  map<Board, Board> parent;
+  map<Board, int> cost;
 
-  qu.push(State({*board, *goal}, moves));
+  qu.push({0, *board});
+  parent[*board] = Board();
+  cost[*board] = 0;
+
   while (!qu.empty()) {
-    Board s = qu.top().first.first;
+    auto [_, state] = qu.top();
     qu.pop();
-    visited.insert(s);
 
-    if (s == *goal) {
-      savePath(s);
+    if (visited.contains(state)) continue;
+
+    if (state == *goal) {
+      savePath(parent, state);
       break;
     }
 
-    vector<Board> ns = neighbours(s);
-    vector<Board>::iterator it;
+    visited.insert(state);
 
-    for (it = ns.begin(); it != ns.end(); ++it) {
-      Board temp = *it;
-      if (!visit(temp)) {
-        parent.insert(pair<Board, Board>(temp, s));
-        qu.push(State({temp, *goal}, moves + 1));
+    for (auto child : neighbours(state)) {
+      if (!visited.contains(child)) {
+        int newCost = cost[state] + 1;
+        if (!cost.contains(child) || newCost < cost[child]) {
+          cost[child] = newCost;
+          int priority = newCost + manhattan(child);
+          qu.push({priority, child});
+          parent[child] = state;
+        }
       }
     }
   }
 
   path = paths.begin();
-}
-
-void Solver::solve() {
-  visited.clear();
-  parent.clear();
-  paths.clear();
-  solve(0);
 }
 
 bool Solver::isSafe(int i, int j) { return (i >= 0 && i < 3 && j >= 0 && j < 3); }
@@ -70,14 +68,14 @@ void Solver::nextStep() {
 
 void Solver::lastStep() { path = paths.end(); }
 
-int Solver::manhattan(Board a, Board goal, int moves) {
-  int dist = moves;
+int Solver::manhattan(Board a) {
+  int dist = 0;
   for (int i = 0; i < 3; ++i) {
     for (int j = 0; j < 3; ++j) {
       if (a[i][j] != 0) {
         for (int k = 0; k < 3; ++k) {
           for (int h = 0; h < 3; ++h) {
-            if (a[i][j] == goal[k][h]) dist += abs(i - k) + abs(j - h);
+            if (a[i][j] == (*goal)[k][h]) dist += abs(i - k) + abs(j - h);
           }
         }
       }
@@ -86,8 +84,6 @@ int Solver::manhattan(Board a, Board goal, int moves) {
 
   return dist;
 }
-
-bool Solver::visit(Board a) { return visited.contains(a); }
 
 vector<Board> Solver::neighbours(Board a) {
   pair<int, int> pos;
@@ -118,8 +114,8 @@ vector<Board> Solver::neighbours(Board a) {
   return ans;
 }
 
-void Solver::savePath(Board s) {
-  if (parent.contains(s)) savePath(parent[s]);
+void Solver::savePath(map<Board, Board> parent, Board s) {
+  if (parent.contains(s) && s != *board) savePath(parent, parent[s]);
 
   paths.push_back(s);
   path = paths.begin();
