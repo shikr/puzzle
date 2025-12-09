@@ -11,13 +11,14 @@
 
 using namespace ftxui;
 
-GameScreen::GameScreen(AppManager* appManager)
+GameScreen::GameScreen(AppManager* appManager, int s)
     : BaseScreen(appManager),
-      labels(3, std::vector<std::string>(3)),
-      container(Container::Vertical({})) {
-  for (int i = 0; i < 3; ++i) {
+      labels(s, std::vector<std::string>(s)),
+      container(Container::Vertical({})),
+      size(s) {
+  for (int i = 0; i < size; ++i) {
     Component row = Container::Horizontal({});
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < size; ++j) {
       ButtonOption opt;
 
       opt.label = &labels[i][j];
@@ -47,8 +48,8 @@ Component GameScreen::render() {
   return Renderer(layout, [&, button] {
     Board board = app->getBoard();
 
-    for (int i = 0; i < 3; ++i) {
-      for (int j = 0; j < 3; ++j) {
+    for (int i = 0; i < size; ++i) {
+      for (int j = 0; j < size; ++j) {
         int value = board[i][j];
 
         labels[i][j] = " " + (value == 0 ? " " : std::to_string(value)) + " ";

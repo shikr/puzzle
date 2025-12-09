@@ -1,5 +1,6 @@
 #include "puzzle.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <random>
 #include <set>
@@ -12,19 +13,23 @@ using namespace std;
 
 static random_device rd;
 static mt19937 eng(rd());
-static uniform_int_distribution board_index(0, 8);
+
+static int random(int size) {
+  uniform_int_distribution dist(0, (int)pow(size, 2) - 1);
+  return dist(eng);
+}
 
 Puzzle::Puzzle() : Solver(&board, &goal) {}
 
-void Puzzle::useRandomBoard() {
-  goal = defaultBoard();
-  board = randomBoard(goal);
+void Puzzle::useRandomBoard(int size) {
+  goal = defaultBoard(size);
+  board = randomBoard(goal, size);
 }
 
 bool Puzzle::useBoard(Board b, Board g) {
   if (!validBoard(g)) return false;
 
-  if (validBoard(b, g)) {
+  if (validBoard(b, g, board.size())) {
     goal = g;
     board = b;
     return true;
@@ -64,7 +69,9 @@ Board Puzzle::getBoard() { return board; }
 
 bool Puzzle::isEmpty(int i, int j) { return isSafe(i, j) && board[i][j] == 0; }
 
-bool Puzzle::isSafe(int i, int j) { return (i >= 0 && i < 3 && j >= 0 && j < 3); }
+bool Puzzle::isSafe(int i, int j) {
+  return (i >= 0 && i < board.size() && j >= 0 && j < board[i].size());
+}
 
 Board Puzzle::deserialize(string board) {
   Board res;
@@ -92,16 +99,16 @@ string Puzzle::serialize(Board board) {
   return res;
 }
 
-Board Puzzle::randomBoard() {
-  Board board;
+Board Puzzle::randomBoard(int size) {
+  Board board(size, vector<int>(size));
   set<int> numbers;
   int i = 0;
 
-  while (numbers.size() < 9) {
-    int n = board_index(eng);
+  while (numbers.size() < pow(size, 2)) {
+    int n = random(size);
     if (numbers.insert(n).second) {
-      int row = i / 3;
-      int col = i % 3;
+      int row = i / size;
+      int col = i % size;
       board[row][col] = n;
       i++;
     }
@@ -110,20 +117,20 @@ Board Puzzle::randomBoard() {
   return board;
 }
 
-Board Puzzle::randomBoard(Board goal) {
-  Board board = randomBoard();
+Board Puzzle::randomBoard(Board goal, int size) {
+  Board board = randomBoard(size);
 
-  if (!validBoard(board, goal)) return randomBoard(goal);
+  if (!validBoard(board, goal, size)) return randomBoard(goal, size);
 
   return board;
 }
 
-Board Puzzle::defaultBoard() {
-  Board goal;
+Board Puzzle::defaultBoard(int size) {
+  Board goal(size, vector<int>(size));
   int n = 1;
-  for (int i = 0; i < 3; ++i) {
-    for (int j = 0; j < 3; ++j) {
-      goal[i][j] = n % 9;
+  for (int i = 0; i < size; ++i) {
+    for (int j = 0; j < size; ++j) {
+      goal[i][j] = n % (int)pow(size, 2);
       n++;
     }
   }
@@ -135,11 +142,11 @@ int Puzzle::countInversions(Board board) {
   int size = pow(board.size(), 2);
 
   for (int i = 0; i < size - 1; ++i) {
-    int ix = i / 3;
-    int iy = i % 3;
+    int ix = i / board.size();
+    int iy = i % board[ix].size();
     for (int j = i + 1; j < size; ++j) {
-      int jx = j / 3;
-      int jy = j % 3;
+      int jx = j / board.size();
+      int jy = j % board[jx].size();
       auto icell = board[ix][iy];
       auto jcell = board[jx][jy];
       if (icell != 0 && jcell != 0 && icell > jcell) inversions++;
@@ -149,20 +156,34 @@ int Puzzle::countInversions(Board board) {
   return inversions;
 }
 
+// usado para verificar al establecer un nuevo tablero
 bool Puzzle::validBoard(Board board) {
+  int size = board.size();
+
+  if (size < 3) return false;
+
+  if (any_of(board.begin(), board.end(), [=](vector<int> r) { return r.size() != size; }))
+    return false;
+
+  return validBoard(board, size);
+}
+
+bool Puzzle::validBoard(Board board, int size) {
   set<int> numbers;
 
   for (auto row : board) {
     for (auto cell : row) {
-      if (cell < 0 || cell > 8 || !numbers.insert(cell).second) return false;
+      if (cell < 0 || cell > pow(size, 2) - 1 || !numbers.insert(cell).second)
+        return false;
     }
   }
 
   return true;
 }
 
-bool Puzzle::validBoard(Board board, Board goal) {
-  if (!validBoard(board)) return false;
+// usado al generar un tablero aleatorio y al establecer un tablero a resolver
+bool Puzzle::validBoard(Board board, Board goal, int size) {
+  if (!validBoard(board, size)) return false;
 
   int x = countInversions(board) % 2;
   int y = countInversions(goal) % 2;

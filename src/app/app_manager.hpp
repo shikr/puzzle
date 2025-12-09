@@ -29,7 +29,7 @@ class AppManager {
   void prevStep();
   void nextStep();
   void lastStep();
-  void newRandomGame();
+  void newRandomGame(int size);
   bool setBoard(Board board, Board goal);
   bool isCompleted();
   bool moveTile(int i, int j);

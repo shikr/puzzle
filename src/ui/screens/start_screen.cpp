@@ -26,15 +26,15 @@ const std::string LOGO =
 
 StartScreen::StartScreen(AppManager* app) : BaseScreen(app), selected(0) {}
 
-std::vector<std::string> StartScreen::level_entries = {"Fácil", "Normal", "Difícil"};
+std::vector<std::string> StartScreen::level_entries = {"Normal", "Difícil"};
 
 Component StartScreen::render() {
   buttons = Container::Horizontal(
       {Button(
            "Iniciar",
            [&] {
-             app->newRandomGame();
-             app->redirect("game");
+             app->newRandomGame(3 + selected);
+             app->redirect(selected == 0 ? "normal" : "hard");
            },
            ButtonOption::Animated(Color::Green)) |
            borderEmpty,

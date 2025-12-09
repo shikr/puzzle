@@ -11,17 +11,18 @@ class Puzzle : public Solver {
   Board goal;
 
   bool isEmpty(int i, int j);
+  bool isSafe(int i, int j);
 
-  static bool isSafe(int i, int j);
   static int countInversions(Board);
-  static bool validBoard(Board board, Board goal);
-  static Board randomBoard();
-  static Board randomBoard(Board goal);
-  static Board defaultBoard();
+  static bool validBoard(Board board, int size);
+  static bool validBoard(Board board, Board goal, int size);
+  static Board randomBoard(int size);
+  static Board randomBoard(Board goal, int size);
+  static Board defaultBoard(int size);
 
  public:
   Puzzle();
-  void useRandomBoard();
+  void useRandomBoard(int size);
   bool useBoard(Board board, Board goal);
   bool swapEmpty(int i, int j);
   bool isCompleted();

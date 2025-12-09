@@ -1,13 +1,12 @@
 #pragma once
 
-#include <array>
 #include <list>
 #include <map>
 #include <vector>
 
 using namespace std;
 
-typedef array<array<int, 3>, 3> Board;
+typedef vector<vector<int>> Board;
 typedef pair<int, Board> State;
 
 class Solver {
@@ -16,11 +15,10 @@ class Solver {
   list<Board> paths;
   list<Board>::iterator path;
 
+  bool isSafe(int i, int j);
   int manhattan(Board state);
+  vector<Board> neighbours(Board);
   void savePath(map<Board, Board>, Board);
-
-  static bool isSafe(int i, int j);
-  static vector<Board> neighbours(Board);
 
  public:
   Solver(Board* board, Board* goal);

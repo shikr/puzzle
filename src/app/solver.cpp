@@ -49,7 +49,9 @@ void Solver::solve() {
   path = paths.begin();
 }
 
-bool Solver::isSafe(int i, int j) { return (i >= 0 && i < 3 && j >= 0 && j < 3); }
+bool Solver::isSafe(int i, int j) {
+  return (i >= 0 && i < board->size() && j >= 0 && j < (*board)[i].size());
+}
 
 Board Solver::getStep() {
   if (paths.empty()) return *board;
@@ -71,11 +73,11 @@ void Solver::lastStep() { path = paths.end(); }
 
 int Solver::manhattan(Board a) {
   int dist = 0;
-  for (int i = 0; i < 3; ++i) {
-    for (int j = 0; j < 3; ++j) {
+  for (int i = 0; i < a.size(); ++i) {
+    for (int j = 0; j < a[i].size(); ++j) {
       if (a[i][j] != 0) {
-        for (int k = 0; k < 3; ++k) {
-          for (int h = 0; h < 3; ++h) {
+        for (int k = 0; k < a.size(); ++k) {
+          for (int h = 0; h < a[i].size(); ++h) {
             if (a[i][j] == (*goal)[k][h]) dist += abs(i - k) + abs(j - h);
           }
         }
@@ -88,8 +90,9 @@ int Solver::manhattan(Board a) {
 
 vector<Board> Solver::neighbours(Board a) {
   pair<int, int> pos;
-  for (int i = 0; i < 3; ++i) {
-    for (int j = 0; j < 3; ++j) {
+
+  for (int i = 0; i < a.size(); ++i) {
+    for (int j = 0; j < a[i].size(); ++j) {
       if (a[i][j] == 0) {
         pos.first = i;
         pos.second = j;

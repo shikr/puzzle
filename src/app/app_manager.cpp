@@ -18,15 +18,16 @@ AppManager::AppManager()
 
 void AppManager::run() {
   StartScreen startScreen(this);
-  GameScreen gameScreen(this);
+  GameScreen normalScreen(this, 3);
+  GameScreen hardScreen(this, 4);
   SolverScreen solverScreen(this);
   CompletedScreen completedScreen(this);
   ScoresScreen scoresScreen(this);
 
   auto component =
       ftxui::Container::Tab(
-          {startScreen.render(), gameScreen.render(), solverScreen.render(),
-           completedScreen.render(), scoresScreen.render()},
+          {startScreen.render(), normalScreen.render(), hardScreen.render(),
+           solverScreen.render(), completedScreen.render(), scoresScreen.render()},
           &screenId) |
       ftxui::Modal(Renderer([&] { return ftxui::text("Resolviendo..."); }), &loading);
 
@@ -73,10 +74,10 @@ void AppManager::nextStep() { puzzle.nextStep(); }
 
 void AppManager::lastStep() { puzzle.lastStep(); }
 
-void AppManager::newRandomGame() {
+void AppManager::newRandomGame(int size) {
   moves = 0;
   start = std::chrono::system_clock::now();
-  puzzle.useRandomBoard();
+  puzzle.useRandomBoard(size);
 }
 
 bool AppManager::setBoard(Board board, Board goal) {
@@ -99,11 +100,12 @@ void AppManager::exit() { screen.Exit(); }
 
 void AppManager::redirect(std::string name) {
   if (name == "start") screenId = 0;
-  if (name == "game") screenId = 1;
-  if (name == "solver") screenId = 2;
-  if (name == "completed") screenId = 3;
+  if (name == "normal") screenId = 1;
+  if (name == "hard") screenId = 2;
+  if (name == "solver") screenId = 3;
+  if (name == "completed") screenId = 4;
   if (name == "scores") {
     scores = Score::getAll();
-    screenId = 4;
+    screenId = 5;
   }
 }

@@ -11,8 +11,9 @@ class GameScreen final : public BaseScreen {
   ftxui::Component container;
   std::vector<std::vector<std::string>> labels;
   int suggestion = INT_MAX;
+  int size;
 
  public:
-  GameScreen(AppManager*);
+  GameScreen(AppManager*, int size);
   ftxui::Component render();
 };
