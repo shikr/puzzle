@@ -29,7 +29,7 @@ void Puzzle::useRandomBoard(int size) {
 bool Puzzle::useBoard(Board b, Board g) {
   if (!validBoard(g)) return false;
 
-  if (validBoard(b, g, board.size())) {
+  if (validBoard(b, g, b.size())) {
     goal = g;
     board = b;
     return true;
@@ -58,7 +58,7 @@ bool Puzzle::isCompleted() {
     const auto row = board[i];
     for (int j = 0; j < row.size(); j++) {
       const auto cell = row[j];
-      if (cell != (row.size() * i + j + 1) % 9) return false;
+      if (cell != (row.size() * i + j + 1) % (int)pow(board.size(), 2)) return false;
     }
   }
 
@@ -74,7 +74,7 @@ bool Puzzle::isSafe(int i, int j) {
 }
 
 Board Puzzle::deserialize(string board) {
-  Board res;
+  Board res(3, vector<int>(3));
 
   if (board.size() < 9) return res;
 
